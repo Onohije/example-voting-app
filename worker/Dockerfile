@@ -25,5 +25,5 @@ RUN dotnet publish -c release -o /app -a $TARGETARCH --self-contained false --no
 FROM mcr.microsoft.com/dotnet/runtime:7.0.410
 WORKDIR /app
 COPY --from=build /app .
-USER node
+USER app
 ENTRYPOINT ["dotnet", "Worker.dll"]
