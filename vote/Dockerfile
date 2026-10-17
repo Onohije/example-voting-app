@@ -8,7 +8,7 @@ RUN apt-get update && \
 
 # Set the application directory
 WORKDIR /usr/local/app
-
+RUN useradd --create-home appuser
 # Install our requirements.txt
 COPY requirements.txt ./requirements.txt
 RUN pip install --no-cache-dir -r requirements.txt
@@ -16,7 +16,9 @@ RUN pip install --no-cache-dir -r requirements.txt
 # dev defines a stage for development, where it'll watch for filesystem changes
 FROM base AS dev
 RUN pip install watchdog
+
 ENV FLASK_ENV=development
+USER appuser
 CMD ["python", "app.py"]
 
 # final defines the stage that will bundle the application for production
