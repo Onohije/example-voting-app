@@ -22,7 +22,7 @@ COPY . .
 RUN dotnet publish -c release -o /app -a $TARGETARCH --self-contained false --no-restore
 
 # app image
-FROM mcr.microsoft.com/dotnet/runtime:7.0.410
+FROM mcr.microsoft.com/dotnet/runtime:7.0.20
 WORKDIR /app
 COPY --from=build /app .
 USER app
