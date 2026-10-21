@@ -27,3 +27,9 @@ variable "node_desired_size" {
   type        = number
   default     = 2
 }
+
+variable "github_repo" {
+  description = "GitHub repo allowed to use the CI role"
+  type        = string
+  default     = "Onohije/example-voting-app"
+}
