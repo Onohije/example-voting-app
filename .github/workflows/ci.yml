@@ -13,6 +13,7 @@ jobs:
     build:
         runs-on: ubuntu-latest
         strategy:
+            fail-fast: false
             matrix:
                 service: [vote, result, worker] # run the same job multiple times, once for each service in the list
 
@@ -39,7 +40,7 @@ jobs:
                 echo "IMAGE=$IMAGE" >> $GITHUB_ENV
 
             - name: Scan image with Trivy
-              uses: aquasecurity/trivy-action@VERSION
+              uses: aquasecurity/trivy-action@0.xx.x
               with:
                 image-ref: ${{ env.IMAGE }}
                 severity: CRITICAL,HIGH
