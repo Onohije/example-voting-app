@@ -24,12 +24,8 @@ CMD ["python", "app.py"]
 
 # final defines the stage that will bundle the application for production
 FROM base AS final
-
-# Copy our code from the current folder to the working directory inside the container
-COPY . .
-
-# Make port 80 available for links and/or publish
+COPY --chown=appuser:appuser . .
+RUN pip uninstall -y pip setuptools wheel
+USER appuser
 EXPOSE 80
-
-# Define our command to be run when launching the container
 CMD ["gunicorn", "app:app", "-b", "0.0.0.0:80", "--log-file", "-", "--access-logfile", "-", "--workers", "4", "--keep-alive", "0"]
