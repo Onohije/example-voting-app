@@ -6,7 +6,7 @@ services:
   vote:
     build: 
       context: ./vote
-    target: dev
+      target: dev
     depends_on:
       redis:
         condition: service_healthy
@@ -26,8 +26,8 @@ services:
 
   result:
     build:
-    context: ./result
-    target: dev
+      context: ./result
+      target: dev
     # use nodemon rather than node for local dev
     entrypoint: nodemon --inspect=0.0.0.0 server.js
     depends_on:
