@@ -31,5 +31,5 @@ variable "node_desired_size" {
 variable "github_repo" {
   description = "GitHub repo allowed to use the CI role"
   type        = string
-  default = "Onohije@116710916/example-voting-app@1422393920"
+  default     = "Onohije@116710916/example-voting-app@1422393920"
 }

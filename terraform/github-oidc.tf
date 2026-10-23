@@ -27,30 +27,30 @@ resource "aws_iam_role" "oidc_role" {
 }
 
 resource "aws_iam_role_policy" "oidc_policy" {
-  name  = "${var.project_name}-github-oidc-policy"
+  name = "${var.project_name}-github-oidc-policy"
   role = aws_iam_role.oidc_role.id
 
-    policy = jsonencode({
-      Version = "2012-10-17"
-      Statement = [
-        {
-          Action   = ["ecr:GetAuthorizationToken"]  # log in to ECR
-          Effect   = "Allow"
-          Resource = "*"
-        },
-        {
-          Action   = [
-            "ecr:BatchCheckLayerAvailability",
-            "ecr:InitiateLayerUpload",
-            "ecr:UploadLayerPart",
-            "ecr:CompleteLayerUpload",
-            "ecr:PutImage",
-            "ecr:BatchGetImage"
-          ]  # push images to all ECR repos
-          Effect   = "Allow"
-          Resource = [for repo in aws_ecr_repository.ecr_repo : repo.arn] # all arn from the for_each loop in ecr.tf
-        },
-      
-      ]
-    })
-  }
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Action   = ["ecr:GetAuthorizationToken"] # log in to ECR
+        Effect   = "Allow"
+        Resource = "*"
+      },
+      {
+        Action = [
+          "ecr:BatchCheckLayerAvailability",
+          "ecr:InitiateLayerUpload",
+          "ecr:UploadLayerPart",
+          "ecr:CompleteLayerUpload",
+          "ecr:PutImage",
+          "ecr:BatchGetImage"
+        ] # push images to all ECR repos
+        Effect   = "Allow"
+        Resource = [for repo in aws_ecr_repository.ecr_repo : repo.arn] # all arn from the for_each loop in ecr.tf
+      },
+
+    ]
+  })
+}

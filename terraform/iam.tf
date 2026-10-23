@@ -42,7 +42,27 @@ resource "aws_iam_role_policy_attachment" "node_cni_policy" {
 }
 
 # lets nodes pull container images from ECR
+
 resource "aws_iam_role_policy_attachment" "node_ecr_readonly" {
   role       = aws_iam_role.eks_worker_node.name
   policy_arn = "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly"
+}
+
+# Role for the EBS CSI driver (via Pod Identity)
+resource "aws_iam_role" "ebs_csi" {
+  name = "${var.project_name}-ebs-csi-role"
+
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [{
+      Effect    = "Allow"
+      Principal = { Service = "pods.eks.amazonaws.com" }
+      Action    = ["sts:AssumeRole", "sts:TagSession"]
+    }]
+  })
+}
+
+resource "aws_iam_role_policy_attachment" "ebs_csi_policy" {
+  role       = aws_iam_role.ebs_csi.name
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonEBSCSIDriverPolicy"
 }

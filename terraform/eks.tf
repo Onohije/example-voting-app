@@ -30,3 +30,31 @@ resource "aws_eks_node_group" "eks_node" {
   ]
 }
 
+
+resource "aws_eks_addon" "pod_identity" {
+  cluster_name                = aws_eks_cluster.main.name
+  addon_name                  = "eks-pod-identity-agent"
+  resolve_conflicts_on_create = "OVERWRITE"
+
+  depends_on = [
+    aws_eks_node_group.eks_node,
+    aws_iam_role_policy_attachment.ebs_csi_policy,
+  ]
+
+}
+
+resource "aws_eks_addon" "ebs_csi" {
+  cluster_name                = aws_eks_cluster.main.name
+  addon_name                  = "aws-ebs-csi-driver"
+  resolve_conflicts_on_create = "OVERWRITE"
+
+  pod_identity_association {
+    role_arn        = aws_iam_role.ebs_csi.arn
+    service_account = "ebs-csi-controller-sa"
+  }
+
+  depends_on = [
+    aws_eks_addon.pod_identity,
+    aws_iam_role_policy_attachment.ebs_csi_policy,
+  ]
+}
