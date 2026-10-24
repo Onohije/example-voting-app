@@ -1,0 +1,10 @@
+redis:
+  image: redis:8.10.2-alpine
+
+db:
+  image: postgres:15.19-alpine
+  storage: 1Gi
+
+image:
+  registry: 533267195508.dkr.ecr.us-east-1.amazonaws.com
+  tag: 83b35a602965a7e90a3cd0f7cddffce3352ad163
