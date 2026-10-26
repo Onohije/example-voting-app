@@ -9,6 +9,9 @@
 
 # build compiles the program for the builder's local platform
 FROM --platform=${BUILDPLATFORM} mcr.microsoft.com/dotnet/sdk:8.0.426 AS build
+RUN apt-get update && \
+    apt-get upgrade -y && \
+    rm -rf /var/lib/apt/lists/*
 ARG TARGETPLATFORM
 ARG TARGETARCH
 ARG BUILDPLATFORM
