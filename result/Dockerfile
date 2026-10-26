@@ -1,5 +1,6 @@
 FROM node:24.22.1-slim AS base
 RUN apt-get update && \
+    apt-get upgrade -y && \
     apt-get install -y --no-install-recommends curl tini && \
     rm -rf /var/lib/apt/lists/*
 WORKDIR /usr/local/app
