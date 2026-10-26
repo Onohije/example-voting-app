@@ -51,6 +51,32 @@ resource "aws_iam_role_policy" "oidc_policy" {
         Resource = [for repo in aws_ecr_repository.ecr_repo : repo.arn] # all arn from the for_each loop in ecr.tf
       },
 
+      {
+        Action   = ["eks:DescribeCluster"]
+        Effect   = "Allow"
+        Resource = aws_eks_cluster.main.arn
+      },
+
     ]
   })
+}
+
+resource "aws_eks_access_entry" "access_entry" {
+  cluster_name  = aws_eks_cluster.main.name
+  principal_arn = aws_iam_role.oidc_role.arn
+  type          = "STANDARD"
+}
+
+resource "aws_eks_access_policy_association" "access_policy" {
+  cluster_name  = aws_eks_cluster.main.name
+  principal_arn = aws_iam_role.oidc_role.arn
+  policy_arn    = "arn:aws:eks::aws:cluster-access-policy/AmazonEKSClusterAdminPolicy"
+
+  access_scope {
+    type = "cluster"
+  }
+
+  depends_on = [
+    aws_eks_access_entry.access_entry
+  ]
 }
