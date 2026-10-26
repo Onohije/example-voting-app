@@ -9,9 +9,6 @@
 
 # build compiles the program for the builder's local platform
 FROM --platform=${BUILDPLATFORM} mcr.microsoft.com/dotnet/sdk:8.0.426 AS build
-RUN apt-get update && \
-    apt-get upgrade -y && \
-    rm -rf /var/lib/apt/lists/*
 ARG TARGETPLATFORM
 ARG TARGETARCH
 ARG BUILDPLATFORM
@@ -26,6 +23,9 @@ RUN dotnet publish -c release -o /app -a $TARGETARCH --self-contained false --no
 
 # app image
 FROM mcr.microsoft.com/dotnet/runtime:8.0.32
+RUN apt-get update && \
+    apt-get upgrade -y && \
+    rm -rf /var/lib/apt/lists/*
 WORKDIR /app
 RUN useradd --create-home appuser
 COPY --from=build --chown=appuser:appuser /app .
