@@ -45,7 +45,9 @@ resource "aws_iam_role_policy" "oidc_policy" {
           "ecr:UploadLayerPart",
           "ecr:CompleteLayerUpload",
           "ecr:PutImage",
-          "ecr:BatchGetImage"
+          "ecr:BatchGetImage",
+          "ecr:BatchGetImage",
+          "ecr:DescribeImages"
         ] # push images to all ECR repos
         Effect   = "Allow"
         Resource = [for repo in aws_ecr_repository.ecr_repo : repo.arn] # all arn from the for_each loop in ecr.tf
