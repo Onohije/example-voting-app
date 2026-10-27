@@ -19,7 +19,7 @@ jobs:
               run: docker compose up -d --build --wait
 
             - name: Run end-to-end test
-              run: ./tests/e2e.sh
+              run: bash tests/e2e.sh
 
             - name: Stop the app
               if: always()
