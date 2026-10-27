@@ -10,7 +10,23 @@ permissions:
   id-token: write
 
 jobs:
+    test:
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout code from repository
+              uses: actions/checkout@v4
+            - name: Start the app
+              run: docker compose up -d --build --wait
+
+            - name: Run end-to-end test
+              run: ./tests/e2e.sh
+
+            - name: Stop the app
+              if: always()
+              run: docker compose down -v
+
     build:
+        needs:  test
         runs-on: ubuntu-latest
         strategy:
             fail-fast: false
@@ -37,6 +53,20 @@ jobs:
                 IMAGE=$REGISTRY/voting-app-${{ matrix.service }}:${{ github.sha }}
                 docker build -t $IMAGE ./${{ matrix.service }}
                 echo "IMAGE=$IMAGE" >> $GITHUB_ENV
+            
+            - name: Smoke test image
+              if: matrix.service != 'worker'
+              run: |
+                     docker run -d --name smoke -p 8000:80 $IMAGE
+                     for i in $(seq 1 20); do
+                     if curl -fsS http://localhost:8000 > /dev/null; then
+                     echo "Smoke test passed"
+                     exit 0
+                     fi
+                     sleep 1
+                     done
+                     docker logs smoke
+                     exit 1
 
             - name: Scan image with Trivy
               uses: aquasecurity/trivy-action@v0.36.0
