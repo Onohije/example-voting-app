@@ -42,17 +42,15 @@ jobs:
                   role-to-assume: ${{ vars.AWS_ROLE_ARN }}
                   aws-region: ${{ vars.AWS_REGION }}
 
-            - name: Login to ECR
-              id: ecr
-              uses: aws-actions/amazon-ecr-login@v2
-
-            - name: Build image
-              env:
-                REGISTRY: ${{ steps.ecr.outputs.registry }}
+            - name: Push image to ECR
               run: |
-                IMAGE=$REGISTRY/voting-app-${{ matrix.service }}:${{ github.sha }}
-                docker build -t $IMAGE ./${{ matrix.service }}
-                echo "IMAGE=$IMAGE" >> $GITHUB_ENV
+                TAG=${{ github.sha }}
+                REPO=voting-app-${{ matrix.service }}
+                if aws ecr describe-images --repository-name $REPO --image-ids imageTag=$TAG > /dev/null 2>&1; then
+                  echo "Image $REPO:$TAG already in ECR, skipping push"
+                else
+                  docker push $IMAGE
+                fi
             
             - name: Smoke test image
               if: matrix.service != 'worker'
