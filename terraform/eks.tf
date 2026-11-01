@@ -7,7 +7,7 @@ resource "aws_eks_cluster" "main" {
     subnet_ids = data.aws_subnets.default.ids
   }
   access_config {
-    authentication_mode                         = "API_AND_CONFIG_MAP"
+    authentication_mode = "API_AND_CONFIG_MAP"
     bootstrap_cluster_creator_admin_permissions = true
   }
 
@@ -61,4 +61,11 @@ resource "aws_eks_addon" "ebs_csi" {
     aws_eks_addon.pod_identity,
     aws_iam_role_policy_attachment.ebs_csi_policy,
   ]
+}
+
+resource "aws_eks_addon" "metrics_server" {
+  cluster_name = aws_eks_cluster.main.name
+  addon_name   = "metrics-server"
+
+  depends_on = [aws_eks_node_group.eks_node]
 }

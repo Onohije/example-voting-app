@@ -8,16 +8,11 @@ resource "aws_iam_role" "lbc_role" {
 
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
-    Statement = [
-      {
-        Action = ["sts:AssumeRole", "sts:TagSession", "pods.eks.amazonaws.com"]
-        Effect = "Allow"
-        Principal = {
-          Service = "ec2.amazonaws.com"
-          
-        }
-      }
-    ]
+    Statement = [{
+      Effect    = "Allow"
+      Principal = { Service = "pods.eks.amazonaws.com" }
+      Action    = ["sts:AssumeRole", "sts:TagSession"]
+    }]
   })
 }
 
