@@ -7,7 +7,7 @@ db:
 
 image:
   registry: 533267195508.dkr.ecr.us-east-1.amazonaws.com
-  tag: 7769c78415c0430353e1a27a628566266e8ff23d
+  tag: dc057fbc275b618020f6a48d0e18616e31074163
 
 ingress:
   enabled: true
